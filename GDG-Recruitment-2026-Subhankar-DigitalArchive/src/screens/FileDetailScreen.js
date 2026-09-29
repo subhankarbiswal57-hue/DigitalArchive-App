@@ -3,9 +3,9 @@ import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert, StyleSheet 
 import * as Sharing from 'expo-sharing';
 import { useArchive } from '../context/ArchiveContext';
 import {
-  getFileById, renameFile, deleteFileRecord, addTagToFile, removeTagFromFile, updateAvailability,
+  getFileById, renameFile, deleteFileRecord, addTagToFile, removeTagFromFile,
+  updateAvailability, getTagsByFile,
 } from '../database/archiveQueries';
-import { getTagsByFile } from '../database/archiveQueries';
 import { checkFile } from '../services/fileAvailabilityService';
 import { deletePhysicalCopy } from '../services/fileImportService';
 import TagChip from '../components/TagChip';
