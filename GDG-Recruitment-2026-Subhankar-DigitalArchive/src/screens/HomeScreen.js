@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState } from 'react';
+import React, { useLayoutEffect, useState, useEffect } from 'react';
 import { View, FlatList, Text, TouchableOpacity, StyleSheet, RefreshControl, Alert, ActivityIndicator } from 'react-native';
 import { useArchive } from '../context/ArchiveContext';
 import SearchBar from '../components/SearchBar';
@@ -7,6 +7,8 @@ import FilterModal from '../components/FilterModal';
 import SortModal from '../components/SortModal';
 import EmptyState from '../components/EmptyState';
 import { COLORS } from '../utils/constants';
+import { getArchiveStats } from '../database/archiveQueries';
+import { formatSize } from '../utils/formatters';
 
 export default function HomeScreen({ navigation }) {
   const {
@@ -17,6 +19,11 @@ export default function HomeScreen({ navigation }) {
   const [filterOpen, setFilterOpen] = useState(false);
   const [sortOpen, setSortOpen] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [stats, setStats] = useState(null);
+
+  useEffect(() => {
+    if (ready) getArchiveStats().then(setStats).catch(() => {});
+  }, [ready, files]);
 
   const activeFilters = (typeFilter ? 1 : 0) + (availabilityFilter ? 1 : 0);
 
@@ -64,6 +71,16 @@ export default function HomeScreen({ navigation }) {
           <Text style={styles.filterText}>Sort</Text>
         </TouchableOpacity>
       </View>
+      {stats && stats.total > 0 && (
+        <View style={styles.statsBanner}>
+          <Text style={styles.statsText}>
+            {stats.total} file{stats.total !== 1 ? 's' : ''} · {formatSize(stats.totalSize)}
+            {(stats.missing + stats.inaccessible) > 0
+              ? ` · ⚠️ ${stats.missing + stats.inaccessible} issue${stats.missing + stats.inaccessible > 1 ? 's' : ''}`
+              : ' · ✓ All available'}
+          </Text>
+        </View>
+      )}
 
       <FlatList
         data={files}
@@ -123,4 +140,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 22, paddingVertical: 14, borderRadius: 28, elevation: 4,
   },
   fabText: { color: '#fff', fontWeight: '700', fontSize: 15 },
+  statsBanner: { paddingHorizontal: 16, paddingVertical: 6, backgroundColor: '#e8f0fe' },
+  statsText: { fontSize: 12, color: COLORS.primary, fontWeight: '600' },
 });
