@@ -24,12 +24,16 @@ export default function ArchiveListItem({ file, onPress }) {
       <View style={styles.body}>
         <Text style={styles.name} numberOfLines={1}>{file.file_name}</Text>
         <Text style={styles.meta}>
-          {formatSize(file.file_size)} • Imported {formatDate(file.import_date).split(',')[0]}
+          {formatSize(file.file_size)} · {formatDate(file.import_date)}
+          {file.tags.length > 0 ? ` · ${file.tags.length} tag${file.tags.length > 1 ? 's' : ''}` : ''}
         </Text>
         <View style={styles.tags}>
-          {file.tags.map((t) => (
+          {file.tags.slice(0, 3).map((t) => (
             <TagChip key={t.id} label={t.name} small />
           ))}
+          {file.tags.length > 3 && (
+            <TagChip label={`+${file.tags.length - 3}`} small />
+          )}
         </View>
       </View>
       <View style={[styles.status, { borderColor: st.color }]}>
