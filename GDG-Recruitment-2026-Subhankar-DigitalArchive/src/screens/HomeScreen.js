@@ -4,6 +4,7 @@ import { useArchive } from '../context/ArchiveContext';
 import SearchBar from '../components/SearchBar';
 import ArchiveListItem from '../components/ArchiveListItem';
 import FilterModal from '../components/FilterModal';
+import SortModal from '../components/SortModal';
 import EmptyState from '../components/EmptyState';
 import { COLORS } from '../utils/constants';
 
@@ -11,8 +12,10 @@ export default function HomeScreen({ navigation }) {
   const {
     files, ready, query, setQuery, typeFilter, setTypeFilter,
     availabilityFilter, setAvailabilityFilter, clearFilters, runIntegrityScan,
+    sortField, setSortField, sortOrder, setSortOrder,
   } = useArchive();
   const [filterOpen, setFilterOpen] = useState(false);
+  const [sortOpen, setSortOpen] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
 
   const activeFilters = (typeFilter ? 1 : 0) + (availabilityFilter ? 1 : 0);
@@ -57,6 +60,9 @@ export default function HomeScreen({ navigation }) {
         <TouchableOpacity style={styles.filterBtn} onPress={() => setFilterOpen(true)}>
           <Text style={styles.filterText}>Filter{activeFilters ? ` (${activeFilters})` : ''}</Text>
         </TouchableOpacity>
+        <TouchableOpacity style={styles.filterBtn} onPress={() => setSortOpen(true)}>
+          <Text style={styles.filterText}>Sort</Text>
+        </TouchableOpacity>
       </View>
 
       <FlatList
@@ -87,6 +93,15 @@ export default function HomeScreen({ navigation }) {
         availabilityFilter={availabilityFilter}
         setAvailabilityFilter={setAvailabilityFilter}
         onClear={clearFilters}
+      />
+
+      <SortModal
+        visible={sortOpen}
+        onClose={() => setSortOpen(false)}
+        sortField={sortField}
+        setSortField={setSortField}
+        sortOrder={sortOrder}
+        setSortOrder={setSortOrder}
       />
     </View>
   );
