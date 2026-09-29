@@ -4,7 +4,7 @@ import TagChip from './TagChip';
 import { COLORS, STATUS } from '../utils/constants';
 import { formatSize, formatDate } from '../utils/formatters';
 
-const TYPE_LABEL = { image: 'IMG', pdf: 'PDF', document: 'DOC', other: 'FILE' };
+const TYPE_LABEL = { image: 'IMG', pdf: 'PDF', document: 'DOC', video: 'VID', other: 'FILE' };
 
 function statusInfo(status) {
   if (status === STATUS.MISSING) return { text: 'Missing', color: COLORS.danger };

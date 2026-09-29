@@ -2,6 +2,7 @@ export const FILE_TYPES = {
   IMAGE: 'image',
   PDF: 'pdf',
   DOCUMENT: 'document',
+  VIDEO: 'video',
   OTHER: 'other',
 };
 
