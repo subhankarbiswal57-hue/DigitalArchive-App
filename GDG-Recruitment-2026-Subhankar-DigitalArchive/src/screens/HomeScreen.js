@@ -75,8 +75,9 @@ export default function HomeScreen({ navigation }) {
         contentContainerStyle={files.length === 0 && { flexGrow: 1, justifyContent: 'center' }}
         ListEmptyComponent={
           <EmptyState
+            icon={query || activeFilters ? '🔍' : '📂'}
             title={query || activeFilters ? 'No matching files' : 'Your archive is empty'}
-            subtitle={query || activeFilters ? 'Try a different search or clear filters.' : 'Tap "+ Import" to add files.'}
+            subtitle={query || activeFilters ? 'Try a different search or clear filters.' : 'Tap "+  Import" to add files.'}
           />
         }
       />

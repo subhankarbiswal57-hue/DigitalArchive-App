@@ -44,7 +44,7 @@ export default function TagManagerScreen() {
       <FlatList
         data={tags}
         keyExtractor={(t) => t.id}
-        ListEmptyComponent={<EmptyState title="No tags yet" subtitle="Create tags to organize your files." />}
+        ListEmptyComponent={<EmptyState icon="🏷️" title="No tags yet" subtitle="Create tags to organize your files." />}
         renderItem={({ item }) => (
           <View style={styles.item}>
             <Text style={styles.itemText}>{item.name}</Text>
