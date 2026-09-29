@@ -144,3 +144,23 @@ export async function getTagsByFile() {
   }
   return map;
 }
+
+/* ------------------------------ STATS ------------------------------ */
+
+/**
+ * Returns a single-row summary of the archive:
+ * { total, totalSize, available, missing, inaccessible }
+ */
+export async function getArchiveStats() {
+  const db = await getDb();
+  const row = await db.getFirstAsync(`
+    SELECT
+      COUNT(*) AS total,
+      COALESCE(SUM(file_size), 0) AS totalSize,
+      SUM(CASE WHEN availability_status = 'available' THEN 1 ELSE 0 END) AS available,
+      SUM(CASE WHEN availability_status = 'missing' THEN 1 ELSE 0 END) AS missing,
+      SUM(CASE WHEN availability_status = 'inaccessible' THEN 1 ELSE 0 END) AS inaccessible
+    FROM archive_files
+  `);
+  return row || { total: 0, totalSize: 0, available: 0, missing: 0, inaccessible: 0 };
+}
