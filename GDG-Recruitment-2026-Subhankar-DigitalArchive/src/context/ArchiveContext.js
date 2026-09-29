@@ -12,18 +12,20 @@ export function ArchiveProvider({ children }) {
   const [query, setQuery] = useState('');
   const [typeFilter, setTypeFilter] = useState(null);
   const [availabilityFilter, setAvailabilityFilter] = useState(null);
+  const [sortField, setSortField] = useState('import_date');
+  const [sortOrder, setSortOrder] = useState('DESC');
   const [ready, setReady] = useState(false);
 
   /** Reloads files (with current search/filters) and tags from the database. */
   const refresh = useCallback(async () => {
     const [rows, allTags, tagMap] = await Promise.all([
-      getFiles({ query, type: typeFilter, availability: availabilityFilter }),
+      getFiles({ query, type: typeFilter, availability: availabilityFilter, sortField, sortOrder }),
       getAllTags(),
       getTagsByFile(),
     ]);
     setFiles(rows.map((r) => ({ ...r, tags: tagMap[r.id] || [] })));
     setTags(allTags);
-  }, [query, typeFilter, availabilityFilter]);
+  }, [query, typeFilter, availabilityFilter, sortField, sortOrder]);
 
   /** Re-checks every file on disk and updates statuses, then reloads. */
   const runIntegrityScan = useCallback(async () => {
@@ -49,7 +51,7 @@ export function ArchiveProvider({ children }) {
     })();
   }, []);
 
-  // Reload whenever search text / filters change (after startup).
+  // Reload whenever search text / filters / sort change (after startup).
   useEffect(() => {
     if (ready) refresh().catch((e) => console.warn('Refresh error', e));
   }, [ready, refresh]);
@@ -67,6 +69,8 @@ export function ArchiveProvider({ children }) {
         query, setQuery,
         typeFilter, setTypeFilter,
         availabilityFilter, setAvailabilityFilter,
+        sortField, setSortField,
+        sortOrder, setSortOrder,
         clearFilters, refresh, runIntegrityScan,
       }}
     >
