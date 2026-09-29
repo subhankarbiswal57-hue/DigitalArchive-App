@@ -30,9 +30,14 @@ export async function insertFile(file) {
 
 /**
  * Search + filter runs entirely on persisted data (SQL), not on device files.
- * filters: { query, type, availability }
+ * filters: { query, type, availability, sortField, sortOrder }
+ * sortField: 'import_date' | 'file_name' | 'file_size'  (default: 'import_date')
+ * sortOrder: 'ASC' | 'DESC'  (default: 'DESC')
  */
-export async function getFiles({ query = '', type = null, availability = null } = {}) {
+export async function getFiles({
+  query = '', type = null, availability = null,
+  sortField = 'import_date', sortOrder = 'DESC',
+} = {}) {
   const db = await getDb();
   const where = [];
   const params = [];
@@ -53,9 +58,13 @@ export async function getFiles({ query = '', type = null, availability = null } 
     params.push(availability);
   }
 
+  const ALLOWED_SORT = ['import_date', 'file_name', 'file_size'];
+  const orderCol = ALLOWED_SORT.includes(sortField) ? sortField : 'import_date';
+  const orderDir = sortOrder === 'ASC' ? 'ASC' : 'DESC';
+
   const sql = `SELECT f.* FROM archive_files f
     ${where.length ? 'WHERE ' + where.join(' AND ') : ''}
-    ORDER BY f.import_date DESC`;
+    ORDER BY f.${orderCol} ${orderDir}`;
   return db.getAllAsync(sql, params);
 }
 
