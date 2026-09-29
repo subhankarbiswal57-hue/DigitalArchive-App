@@ -122,6 +122,15 @@ export async function removeTagFromFile(fileId, tagId) {
   await db.runAsync('DELETE FROM file_tags WHERE file_id = ? AND tag_id = ?', [fileId, tagId]);
 }
 
+/** Returns tags for a single file as [{id, name}, ...] */
+export async function getTagsForFile(fileId) {
+  const db = await getDb();
+  return db.getAllAsync(
+    `SELECT t.id, t.name FROM file_tags ft JOIN tags t ON t.id = ft.tag_id WHERE ft.file_id = ? ORDER BY t.name`,
+    [fileId]
+  );
+}
+
 /** Returns a map: fileId -> [{id, name}, ...] */
 export async function getTagsByFile() {
   const db = await getDb();
