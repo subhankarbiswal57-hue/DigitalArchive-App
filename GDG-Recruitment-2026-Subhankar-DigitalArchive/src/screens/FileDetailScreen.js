@@ -100,8 +100,8 @@ export default function FileDetailScreen({ route, navigation }) {
     ['Original name', file.original_name],
     ['Type', file.file_type],
     ['Size', formatSize(file.file_size)],
-    ['Imported', formatDate(file.import_date)],
-    ['Last modified', formatDate(file.last_modified_date)],
+    ['Imported', formatDate(file.import_date, true)],
+    ['Last modified', formatDate(file.last_modified_date, true)],
     ['Status', file.availability_status],
     ['Location', file.file_uri],
   ];
