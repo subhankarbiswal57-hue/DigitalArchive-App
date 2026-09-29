@@ -3,6 +3,7 @@ export const FILE_TYPES = {
   PDF: 'pdf',
   DOCUMENT: 'document',
   VIDEO: 'video',
+  AUDIO: 'audio',
   OTHER: 'other',
 };
 
