@@ -43,6 +43,9 @@ export function getDb() {
 
         CREATE INDEX IF NOT EXISTS idx_files_name ON archive_files(file_name);
         CREATE INDEX IF NOT EXISTS idx_files_type ON archive_files(file_type);
+        CREATE INDEX IF NOT EXISTS idx_files_status ON archive_files(availability_status);
+        CREATE INDEX IF NOT EXISTS idx_files_date ON archive_files(import_date);
+        CREATE UNIQUE INDEX IF NOT EXISTS idx_files_uri ON archive_files(file_uri);
       `);
       return db;
     })();
