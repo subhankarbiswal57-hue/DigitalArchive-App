@@ -39,6 +39,8 @@ export function ArchiveProvider({ children }) {
         await getDb();
         await cleanupOrphanFiles();
         await scanArchive();
+        // Load files with up-to-date statuses before marking ready
+        await refresh();
       } catch (e) {
         console.warn('Startup error', e);
       } finally {
