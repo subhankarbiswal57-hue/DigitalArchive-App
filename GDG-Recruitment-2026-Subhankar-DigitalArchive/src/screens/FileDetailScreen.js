@@ -99,6 +99,7 @@ export default function FileDetailScreen({ route, navigation }) {
   const rows = [
     ['Original name', file.original_name],
     ['Type', file.file_type],
+    ['MIME type', file.mime_type || 'Unknown'],
     ['Size', formatSize(file.file_size)],
     ['Imported', formatDate(file.import_date, true)],
     ['Last modified', formatDate(file.last_modified_date, true)],
