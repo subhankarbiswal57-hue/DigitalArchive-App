@@ -6,9 +6,13 @@ export function formatSize(bytes) {
   return `${(bytes / (1024 * 1024 * 1024)).toFixed(2)} GB`;
 }
 
-export function formatDate(iso) {
+const DATE_FMT = { year: 'numeric', month: 'short', day: 'numeric' };
+const DATETIME_FMT = { ...DATE_FMT, hour: '2-digit', minute: '2-digit' };
+
+/** Returns a short human-readable date string. Pass full=true for date+time. */
+export function formatDate(iso, full = false) {
   if (!iso) return 'Unknown';
   const d = new Date(iso);
   if (isNaN(d.getTime())) return 'Unknown';
-  return d.toLocaleString();
+  return d.toLocaleDateString(undefined, full ? DATETIME_FMT : DATE_FMT);
 }
