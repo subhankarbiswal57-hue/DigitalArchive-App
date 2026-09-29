@@ -4,7 +4,7 @@ import * as Sharing from 'expo-sharing';
 import { useArchive } from '../context/ArchiveContext';
 import {
   getFileById, renameFile, deleteFileRecord, addTagToFile, removeTagFromFile,
-  updateAvailability, getTagsByFile,
+  updateAvailability, getTagsForFile,
 } from '../database/archiveQueries';
 import { checkFile } from '../services/fileAvailabilityService';
 import { deletePhysicalCopy } from '../services/fileImportService';
@@ -31,10 +31,10 @@ export default function FileDetailScreen({ route, navigation }) {
       await updateAvailability(f.id, status);
       f.availability_status = status;
     }
-    const map = await getTagsByFile();
+    const tags = await getTagsForFile(id);
     setFile(f);
     setName(f.file_name);
-    setFileTags(map[id] || []);
+    setFileTags(tags);
   }, [id, navigation]);
 
   useEffect(() => { load().catch((e) => console.warn(e)); }, [load]);
