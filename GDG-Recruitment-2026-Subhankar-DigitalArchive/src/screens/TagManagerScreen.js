@@ -6,8 +6,16 @@ import EmptyState from '../components/EmptyState';
 import { COLORS } from '../utils/constants';
 
 export default function TagManagerScreen() {
-  const { tags, refresh } = useArchive();
+  const { tags, files, refresh } = useArchive();
   const [name, setName] = useState('');
+
+  // Build a count of files per tag using the files already in context
+  const tagFileCounts = {};
+  for (const f of files) {
+    for (const t of (f.tags || [])) {
+      tagFileCounts[t.id] = (tagFileCounts[t.id] || 0) + 1;
+    }
+  }
 
   const add = async () => {
     const trimmed = name.trim();
@@ -22,7 +30,11 @@ export default function TagManagerScreen() {
   };
 
   const remove = (tag) => {
-    Alert.alert('Delete tag?', `"${tag.name}" will be removed from all files. The files themselves are kept.`, [
+    const count = tagFileCounts[tag.id] || 0;
+    const msg = count > 0
+      ? `"${tag.name}" is used on ${count} file${count > 1 ? 's' : ''} and will be removed from all of them. The files themselves are kept.`
+      : `"${tag.name}" will be deleted.`;
+    Alert.alert('Delete tag?', msg, [
       { text: 'Cancel', style: 'cancel' },
       {
         text: 'Delete', style: 'destructive',
@@ -47,7 +59,12 @@ export default function TagManagerScreen() {
         ListEmptyComponent={<EmptyState icon="🏷️" title="No tags yet" subtitle="Create tags to organize your files." />}
         renderItem={({ item }) => (
           <View style={styles.item}>
-            <Text style={styles.itemText}>{item.name}</Text>
+            <View style={styles.itemLeft}>
+              <Text style={styles.itemText}>{item.name}</Text>
+              {tagFileCounts[item.id] ? (
+                <Text style={styles.count}>{tagFileCounts[item.id]} file{tagFileCounts[item.id] > 1 ? 's' : ''}</Text>
+              ) : null}
+            </View>
             <TouchableOpacity onPress={() => remove(item)}><Text style={styles.del}>Delete</Text></TouchableOpacity>
           </View>
         )}
@@ -63,9 +80,12 @@ const styles = StyleSheet.create({
   addBtn: { backgroundColor: COLORS.primary, paddingHorizontal: 18, justifyContent: 'center', borderRadius: 10, marginLeft: 8 },
   addText: { color: '#fff', fontWeight: '700' },
   item: {
-    flexDirection: 'row', justifyContent: 'space-between', backgroundColor: '#fff',
-    padding: 12, borderRadius: 10, marginBottom: 6, borderWidth: 1, borderColor: COLORS.border,
+    flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
+    backgroundColor: '#fff', padding: 12, borderRadius: 10, marginBottom: 6,
+    borderWidth: 1, borderColor: COLORS.border,
   },
+  itemLeft: { flex: 1 },
   itemText: { fontSize: 15, color: COLORS.text },
+  count: { fontSize: 12, color: COLORS.subtext, marginTop: 2 },
   del: { color: COLORS.danger, fontWeight: '600' },
 });
